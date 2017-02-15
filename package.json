@@ -1,0 +1,23 @@
+{
+  "name": "nine-mans-morris-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "run": "node main.js",
+    "test": "mocha"
+  },
+  "author": "Patrick Mennig",
+  "license": "MIT",
+  "dependencies": {
+    "base32": "0.0.6",
+    "body-parser": "^1.16.0",
+    "express": "^4.14.0",
+    "express-ws": "^2.0.0",
+    "jsnetworkx": "^0.3.4",
+    "mongoose": "^4.8.1"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0"
+  }
+}
