@@ -109,7 +109,7 @@ describe('Game', function () {
 				status: GAME_CONST.GAME_ERROR
 			};
 
-			assert.deepEqual(expected, {status: result.status});
+			assert.deepEqual(expected, {state: result.state});
 		});
 
 		it('should be an invalid turn, phase 1 removing from mill', function () {
@@ -134,7 +134,7 @@ describe('Game', function () {
 				status: GAME_CONST.GAME_ERROR
 			};
 
-			assert.deepEqual(expected, {status: result.status});
+			assert.deepEqual(expected, {state: result.state});
 		});
 	});
 	

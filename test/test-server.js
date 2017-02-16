@@ -17,10 +17,10 @@ setTimeout(function () {
 
 	describe('main server', function () {
 
-		it('should return a positive status message', function (done) {
+		it('should return a positive state message', function (done) {
 			agent
-				.get('/status')
-				.expect(200, done);
+				.get('/state')
+				.expect(200, 'Online', done);
 		});
 	});
 
