@@ -13,13 +13,16 @@ const routes = [
 	...botGame.routes(HTTP_VERBS),
 	...versus.routes(HTTP_VERBS),
 	{
-		path: '/status',
+		path: '/state',
 		method: HTTP_VERBS.GET,
 		handler: (req, res, next) => res.send('Online')
 	}
 ];
 
+
+
 botGame.init();
+versus.init();
 
 
 

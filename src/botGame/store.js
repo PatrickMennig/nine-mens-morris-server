@@ -62,7 +62,8 @@ function cleanStore() {
 			store[k].setErrorState();
 		}
 		if(now - store[k].creationTime > 7 * 24 * 60 * 60 * 1000) {
-			store[k].setErrorState();
+			//store[k].setToDeleteState();
+			// Todo: delete?
 		}
 	});
 }

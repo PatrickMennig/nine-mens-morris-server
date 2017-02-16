@@ -54,7 +54,7 @@ let routes = (httpVerbs) => {
 			{
 				path: AVAILABLE_ROUTES.ACTIVE_GAME,
 				method: httpVerbs.GET,
-				desc: 'Get the status of a specific game, returns the complete game object.',
+				desc: 'Get the state of a specific game, returns the complete game object.',
 				handler: activeGame
 
 			},
@@ -201,11 +201,11 @@ const playTurn = (req, res, next) => {
 
 			console.dir(result);
 
-			res.status(result.status);
-			if(result.status === 200) {
+			res.state(result.state);
+			if(result.state === 200) {
 				res.json(result.result);
 			} else {
-				res.status(201);
+				res.state(201);
 				res.send(result.result);
 			}
 		})
@@ -262,7 +262,7 @@ const describe = (req, res, next) => {
 
 // ==== HELPER FUNCTIONS ====
 const declineRequest = (code, msg, res) => {
-	res.status(code);
+	res.state(code);
 	res.send(msg);
 };
 

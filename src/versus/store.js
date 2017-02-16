@@ -1,11 +1,12 @@
 // ==== STATIC VAR ====
-let store = {};
+const store = {};
 let intervalId = null;
+let messageBus = null;
 
 
 
 //Todo: make this to a class to avoid duplicate code
-
+exports.init = (bus) => {messageBus = bus;};
 
 
 // ==== PUBLIC FUNCTIONS ====
@@ -59,10 +60,24 @@ function cleanStore() {
 	const now = new Date().getTime();
 	Object.keys(store).map(k => {
 		if(now - store[k].lastTurnPlayedAt > 60 * 1000) {
-			store[k].setTimeoutState();
+
+			const game = store[k];
+			game.setTimeoutState();
+
+
+			messageBus.emit(`wait-for-turn-${game.id}-${game.getOtherPlayer().id}`, {
+				status: 201,
+				result: `You won, the other player: ${game.getActivePlayer().id} timed out.`
+			});
+
+			messageBus.emit('save-game', {
+				winnerId: game.getOtherPlayer().id,
+				game: game
+			});
 		}
 		if(now - store[k].creationTime > 7 * 24 * 60 * 60 * 1000) {
-			store[k].setToDeleteState();
+			//store[k].setToDeleteState();
+			// Todo: delete?
 		}
 	});
 }

@@ -24,6 +24,14 @@ const AVAILABLE_ROUTES = {
 
 
 
+// ==== PUBLIC FUNCTIONS ====
+exports.init = () => {
+	store.startCleanTask();
+	store.init(messageBus);
+};
+
+
+
 // ==== PUBLIC ROUTES ====
 let routes = (httpVerbs) => {
 
@@ -55,7 +63,7 @@ let routes = (httpVerbs) => {
 		{
 			path: AVAILABLE_ROUTES.ACTIVE_GAME,
 			method: httpVerbs.GET,
-			desc: 'Get the status of a specific game, returns the complete game object.',
+			desc: 'Get the state of a specific game, returns the complete game object.',
 			handler: activeGame
 
 		},
@@ -289,9 +297,19 @@ const describe = (req, res, next) => {
 
 
 
+
+messageBus.on('save-game', result => {
+	// Todo: save game to database
+	const { winnerId, game } = result;
+	// ...
+});
+
+
+
+
 // ==== HELPER FUNCTIONS ====
 const declineRequest = (code, msg, res) => {
-	res.status(code);
+	res.state(code);
 	res.send(msg);
 };
 

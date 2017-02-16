@@ -24,7 +24,7 @@ function Game (pOneId=null, pOneType=null, pTwoId=null, pTwoType=null) {
 	this.creationTime = new Date().getTime();
 	this.lastTurnPlayedAt = new Date().getTime();
 
-	this.status = GAME_CONST.GAME_OFFERED;
+	this.state = GAME_CONST.GAME_OFFERED;
 
 	this.board = new Board();
 
@@ -90,7 +90,7 @@ Game.prototype.executeBotTurn = function (ai) {
 
 Game.prototype.emptyTurnResult = function () {
 	return {
-		status: this.status,
+		state: this.state,
 		field: this.board.field,
 		turn: {}
 	};
@@ -106,19 +106,19 @@ Game.prototype.setToDeleteState = function () {
 };
 
 Game.prototype.setErrorState = function () {
-	this.status = GAME_CONST.GAME_ERROR;
+	this.state = GAME_CONST.GAME_ERROR;
 };
 
 Game.prototype.endWithError = function (err) {
 	this.setErrorState();
 	return {
-		status: this.status,
+		state: this.state,
 		error: err
 	}
 };
 
 Game.prototype.startGame = function () {
-	this.status = GAME_CONST.GAME_ACTIVE;
+	this.state = GAME_CONST.GAME_ACTIVE;
 };
 
 
@@ -137,8 +137,8 @@ Game.prototype.startGame = function () {
 Game.prototype.executeTurn = function (playerId, turn) {
 
 	// step 1: do all the checks
-	if(this.status !== GAME_CONST.GAME_ACTIVE) {
-		throw new Error(`You are trying to take a turn in a game in status: ${this.status} but only status: ${GAME_CONST.GAME_ACTIVE} can be played.`)
+	if(this.state !== GAME_CONST.GAME_ACTIVE) {
+		throw new Error(`You are trying to take a turn in a game in status: ${this.state} but only status: ${GAME_CONST.GAME_ACTIVE} can be played.`)
 	}
 
 	if(!isValidPlayerId(this.players, playerId)) {
@@ -173,9 +173,9 @@ Game.prototype.executeTurn = function (playerId, turn) {
 	// step 2: check the consequences (i. e. will game end?)
 	// if yes, we do not execute the last turn
 	if(rules.willEndGame(otherPlayerObj, removeId >= 0)) {
-		this.status = GAME_CONST.GAME_FINISHED;
+		this.state = GAME_CONST.GAME_FINISHED;
 		return {
-			status: this.status,
+			state: this.state,
 			winner: activePlayerObj.id,
 			turn: turn
 		}
@@ -204,7 +204,7 @@ Game.prototype.executeTurn = function (playerId, turn) {
 	this.activePlayer = otherPlayer(this.activePlayer);
 
 	return {
-		status: this.status,
+		state: this.state,
 		field: this.board.field,
 		turn: turn
 	};
@@ -236,7 +236,7 @@ Game.describe = function () {
 			},
 			{
 				name: 'status',
-				desc: 'The status of the game.',
+				desc: 'The state of the game.',
 				values: [ GAME_CONST.GAME_ACTIVE, GAME_CONST.GAME_ERROR, GAME_CONST.GAME_FINISHED, GAME_CONST.GAME_TIMED_OUT, GAME_CONST.GAME_TO_DELETE ]
 			},
 			{

@@ -74,7 +74,7 @@ function isWellFormedGroupId(groupId) {
 
 function isGameInOfferingState(game) {
 	return new Promise((resolve, reject) => {
-		if(game.status !== GAME_CONST.GAME_OFFERED) {
+		if(game.state !== GAME_CONST.GAME_OFFERED) {
 			return reject(new Error(`Game with id: ${game.id} is not in offering state.`));
 		}
 		resolve(game);
