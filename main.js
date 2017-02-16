@@ -31,3 +31,6 @@ routes.forEach(r => {
 app.listen(config.server.PORT, () => {
 	console.log(`[Server is running]   : Game server is listening on http://localhost:${config.server.PORT}`);
 });
+
+
+module.exports = app;
