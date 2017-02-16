@@ -32,6 +32,16 @@ exports.init = () => {
 
 
 
+
+// ==== STORE EVENT LISTENER
+messageBus.on('save-game', result => {
+	// Todo: save game to database
+	const { winnerId, game } = result;
+	// ...
+});
+
+
+
 // ==== PUBLIC ROUTES ====
 let routes = (httpVerbs) => {
 
@@ -273,13 +283,11 @@ const activeGames = (req, res, next) => {
 
 
 const visual = (req, res, next) => {
-
 	validation
 		.isAcceptable(validation.GAME_ID, req.params['id'], store)
 		.then(id => res.json(store.get(id).boardStateVisual()))
 		.then(null, err => endChain(err))
 		.catch(err => declineRequest(400, err.message, res));
-
 };
 
 
@@ -294,16 +302,6 @@ const describe = (req, res, next) => {
 	});
 	return next();
 };
-
-
-
-
-messageBus.on('save-game', result => {
-	// Todo: save game to database
-	const { winnerId, game } = result;
-	// ...
-});
-
 
 
 
