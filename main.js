@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 
 /* connect to the database */
-mongo.init();
+// mongo.init();
 
 
 

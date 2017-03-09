@@ -26,7 +26,7 @@ describe('Game', function () {
 
 			const result = g.executeTurn(p.id, {fromId: null, toId: 0, removeId: null});
 			const expected = {
-				status: GAME_CONST.GAME_ACTIVE,
+				state: GAME_CONST.GAME_ACTIVE,
 				field: field,
 				turn: {fromId: null, toId: 0, removeId: null}
 			};
@@ -55,7 +55,7 @@ describe('Game', function () {
 
 			const result = g.executeTurn(p.id, {fromId: 0, toId: 1, removeId: null});
 			const expected = {
-				status: GAME_CONST.GAME_ACTIVE,
+				state: GAME_CONST.GAME_ACTIVE,
 				field: field,
 				turn: {fromId: 0, toId: 1, removeId: null}
 			};
@@ -84,7 +84,7 @@ describe('Game', function () {
 
 			const result = g.executeTurn(p.id, {fromId: 0, toId: 3, removeId: null});
 			const expected = {
-				status: GAME_CONST.GAME_ACTIVE,
+				state: GAME_CONST.GAME_ACTIVE,
 				field: field,
 				turn: {fromId: 0, toId: 3, removeId: null}
 			};
@@ -106,7 +106,7 @@ describe('Game', function () {
 
 			const result = g.executeTurn(p.id, {fromId: null, toId: 0, removeId: null});
 			const expected = {
-				status: GAME_CONST.GAME_ERROR
+				state: GAME_CONST.GAME_ERROR
 			};
 
 			assert.deepEqual(expected, {state: result.state});
@@ -131,7 +131,7 @@ describe('Game', function () {
 
 			const result = g.executeTurn(p.id, {fromId: null, toId: 4, removeId: 1});
 			const expected = {
-				status: GAME_CONST.GAME_ERROR
+				state: GAME_CONST.GAME_ERROR
 			};
 
 			assert.deepEqual(expected, {state: result.state});

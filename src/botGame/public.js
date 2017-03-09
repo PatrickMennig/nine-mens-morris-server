@@ -156,7 +156,7 @@ const playTurn = (req, res, next) => {
 				return BotGame.saveNew({
 					id: game.id,
 					groupId: groupId,
-					winner: '0'
+					winner: groupId
 				}).then(() => Promise.resolve({
 					status: 201,
 					result: 'You won!'
@@ -201,11 +201,10 @@ const playTurn = (req, res, next) => {
 
 			console.dir(result);
 
-			res.state(result.state);
+			res.status(result.status);
 			if(result.state === 200) {
 				res.json(result.result);
 			} else {
-				res.state(201);
 				res.send(result.result);
 			}
 		})
@@ -262,7 +261,7 @@ const describe = (req, res, next) => {
 
 // ==== HELPER FUNCTIONS ====
 const declineRequest = (code, msg, res) => {
-	res.state(code);
+	res.status(code);
 	res.send(msg);
 };
 

@@ -1,19 +1,21 @@
 // ==== IMPORTS ====
-const rules 						= require('../../game/rules/rules');
-const GAME_CONST					= require('../../game/const');
+const rules 						= require('../../../game/rules/rules');
+const GAME_CONST					= require('../../../game/const');
+const utility						= require('../utility');
 
 
 
 // ==== PUBLIC FUNCTIONS ====
 /**
- * Idea of simplest AI is to just make a valid random turn.
+ * Idea of veryWeak AI is to just make a valid random turn.
+ * Even if we find a mill, we will discard this turn if not also
+ * has the correct removeId associated.
+ * Most of the time, this bot will place and move randomly,
+ * without ever removing a token.
  *
  * We just create random turns until one is valid by the rules
- * and execute this one
+ * and execute this one.
  *
- * @param board
- * @param player
- * @param otherPlayer
  */
 exports.makeTurn = (board, player, otherPlayer) => {
 
@@ -46,37 +48,22 @@ function randomTurn(gamePhase) {
 		case GAME_CONST.GAME_PHASE_1:
 			return {
 				fromId: null,
-				toId: getRandomInt(0,23),
-				removeId: Math.random() > 0.75 ? getRandomInt(0,23) : null
+				toId: utility.getRandomInt(0,23),
+				removeId: Math.random() > 0.75 ? utility.getRandomInt(0,23) : null
 			};
 
 		case GAME_CONST.GAME_PHASE_2:
 			return {
-				fromId: getRandomInt(0,23),
-				toId: getRandomInt(0,23),
-				removeId: Math.random() > 0.75 ? getRandomInt(0,23) : null
+				fromId: utility.getRandomInt(0,23),
+				toId: utility.getRandomInt(0,23),
+				removeId: Math.random() > 0.75 ? utility.getRandomInt(0,23) : null
 			};
 
 		case GAME_CONST.GAME_PHASE_3:
 			return {
-				fromId: getRandomInt(0,23),
-				toId: getRandomInt(0,23) ,
-				removeId: Math.random() > 0.75 ? getRandomInt(0,23) : null
+				fromId: utility.getRandomInt(0,23),
+				toId: utility.getRandomInt(0,23),
+				removeId: Math.random() > 0.75 ? utility.getRandomInt(0,23) : null
 			};
 	}
-}
-
-/**
- * Returns a random number between min (inclusive) and max (exclusive)
- */
-function getRandomArbitrary(min, max) {
-	return Math.random() * (max - min) + min;
-}
-
-/**
- * Returns a random integer between min (inclusive) and max (inclusive)
- * Using Math.round() will give you a non-uniform distribution!
- */
-function getRandomInt(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
 }

@@ -136,6 +136,8 @@ Game.prototype.startGame = function () {
  */
 Game.prototype.executeTurn = function (playerId, turn) {
 
+	//TODO there is an error in the checks, when supplying {"toId":x} as a turn object it crashes
+
 	// step 1: do all the checks
 	if(this.state !== GAME_CONST.GAME_ACTIVE) {
 		throw new Error(`You are trying to take a turn in a game in status: ${this.state} but only status: ${GAME_CONST.GAME_ACTIVE} can be played.`)
@@ -151,14 +153,14 @@ Game.prototype.executeTurn = function (playerId, turn) {
 
 	const activePlayerObj = this.players.find(p => p.id === playerId);
 	const otherPlayerObj = this.players[otherPlayer(this.activePlayer)];
-	const { fromId, toId, removeId } = turn;
+	const { fromId=null, toId=null, removeId=null } = turn;
 
 	if(!rules.isValidTurn(this.board, activePlayerObj, fromId, toId)) {
 		return  this.endWithError( new Error(`Invalid turn. This move is not allowed by the rules.`) );
 	}
 
 	const willClose = rules.willCloseMill(this.board, activePlayerObj, fromId, toId);
-	if(willClose && removeId === null) {
+	if(willClose && removeId == null) {
 		return  this.endWithError( new Error(`You are closing a mill this turn but didn't supply a field id where you want to remove a token.`) );
 	}
 
@@ -183,17 +185,17 @@ Game.prototype.executeTurn = function (playerId, turn) {
 
 
 	// step 3: actually execute the turn
-	if(fromId !== null) {
+	if(fromId != null) {
 		this.board.set(fromId, GAME_CONST.TOKEN_EMPTY);
 	}
 
 	this.board.set(toId, activePlayerObj.token);
 
-	if(fromId === null) {
+	if(fromId == null) {
 		activePlayerObj.placedToken();
 	}
 
-	if(removeId !==  null) {
+	if(removeId != null) {
 		this.board.set(removeId, GAME_CONST.TOKEN_EMPTY);
 		otherPlayerObj.lostToken();
 	}

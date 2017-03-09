@@ -15,10 +15,12 @@
     "express": "^4.14.0",
     "express-ws": "^2.0.0",
     "jsnetworkx": "^0.3.4",
-    "mongoose": "^4.8.1"
+    "mongoose": "^4.8.1",
+    "promise.any": "^0.1.1"
   },
   "devDependencies": {
     "mocha": "^3.2.0",
+    "promise-any": "^0.2.0",
     "supertest": "^3.0.0"
   }
 }
