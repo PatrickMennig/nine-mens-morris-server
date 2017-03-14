@@ -3,7 +3,7 @@ const assert 						= require('assert');
 const http							= require('http');
 const supertest						= require('supertest');
 const server 						= require('../main');
-const any					= require('promise.any');
+const any							= require('promise.any');
 
 
 
@@ -95,7 +95,43 @@ setTimeout(function () {
 
 	describe('versus server', function () {
 
-		it('should allow us to offer and join a game with two clients');
+		it('should allow us to offer and join a game with two clients' , function (done) {
+
+			agent
+				.post('/versus/offer')
+				.query(`groupid=${GROUP_ID}`)
+				.then(res => {
+					const { gameId } = res.body;
+
+					return Promise.resolve(any([
+						joinGame(GROUP_ID, gameId),
+						joinGame(GROUP_ID_2, gameId)
+					]));
+				})
+				.then(anyRes => {
+					console.dir(anyRes);
+					done();
+				})
+				.catch(null, err => {
+					done(new Error('Undefined error occurred testing versus game.'));
+				});
+
+
+			function joinGame (groupId, gameId) {
+				return new Promise((resolve, reject) => {
+					agent
+						.post('/versus/join')
+						.query(`groupid=${groupId}`)
+						.query(`gameid=${gameId}`)
+						.then((err, res) => {
+							if(err) {
+								return reject(err);
+							}
+							resolve(res);
+						})
+				});
+			}
+		});
 
 	});
 
@@ -109,47 +145,5 @@ setTimeout(function () {
 
 
 /*
- , function (done) {
 
- agent
- .post('/versus/offer')
- .query(`groupid=${GROUP_ID}`)
- .then(res => {
- const { gameId } = res.body;
-
- return any([
- joinGame(GROUP_ID, gameId),
- joinGame(GROUP_ID_2, gameId)
- ]);
- })
- .then(anyRes => {
- console.dir(anyRes);
- done();
- })
- .then(null, err => {
- done(new Error('Error joining versus game.'));
- })
- .then(null, err => {
- done(new Error('Error offering versus game.'));
- })
- .catch(null, err => {
- done(new Error('Undefined error occurred testing versus game.'));
- });
-
-
- function joinGame (groupId, gameId) {
- return new Promise((resolve, reject) => {
- agent
- .post('/versus/join')
- .query(`groupid=${groupId}`)
- .query(`gameid=${gameId}`)
- .then((err, res) => {
- if(err) {
- return reject(err);
- }
- resolve(res);
- })
- });
- }
- }
  */

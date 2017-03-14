@@ -155,10 +155,12 @@ const joinGame = (req, res, next) => {
 				messageBus.once(`wait-for-join-${game.id}`, () => {
 					handleConnect();
 				});
+				messageBus.once(`wait-for-disconnect-${game.id}-${groupId}`, (result, game) => sendResult(res, result, game));
 			}
 
 			if(numberOfPlayers === 2) {
 				// second player joining
+				messageBus.once(`wait-for-disconnect-${game.id}-${groupId}`, (result, game) => sendResult(res, result, game));
 				// start the game and handle the "all players joined" event
 				game.startGame();
 				messageBus.emit(`wait-for-join-${game.id}`);
@@ -307,7 +309,7 @@ const describe = (req, res, next) => {
 
 // ==== HELPER FUNCTIONS ====
 const declineRequest = (code, msg, res) => {
-	res.state(code);
+	res.status(code);
 	res.send(msg);
 };
 

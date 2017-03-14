@@ -56,22 +56,33 @@ exports.stopCleanTask = () => {
 
 
 // ==== HELPER FUNCTIONS ====
+// TODO Refactor
 function cleanStore() {
 	const now = new Date().getTime();
 	Object.keys(store).map(k => {
-		if(now - store[k].lastTurnPlayedAt > 60 * 1000) {
+		if(now - store[k].lastTurnPlayedAt > 10 * 1000) {
 
 			const game = store[k];
+
+			if(game.status === require('../game/const').GAME_TIMED_OUT) {
+				return;
+			}
+
 			game.setTimeoutState();
 
-
-			messageBus.emit(`wait-for-turn-${game.id}-${game.getOtherPlayer().id}`, {
-				status: 201,
-				result: `You won, the other player: ${game.getActivePlayer().id} timed out.`
+			const playerIds = game.players.map(p => p.id);
+			playerIds.forEach(pid => {
+				messageBus.emit(`wait-for-disconnect-${game.id}-${pid}`, {
+					status: 201,
+					result: `Game has ended, active player timed out.`
+				});
 			});
 
+			const otherPlayer = game.getOtherPlayer();
+			const otherPlayerId = otherPlayer ? otherPlayer.id : -1;
+
 			messageBus.emit('save-game', {
-				winnerId: game.getOtherPlayer().id,
+				winnerId: otherPlayerId,
 				game: game
 			});
 		}
