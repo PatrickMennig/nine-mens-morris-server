@@ -10,8 +10,6 @@ const versus  = require('../src/logic/versus/public');
  * Concat all routes from imported modules to one large array
  */
 const routes = [
-	...botGame.routes(HTTP_VERBS),
-	...versus.routes(HTTP_VERBS),
 	{
 		path: '/state',
 		method: HTTP_VERBS.GET,
@@ -19,10 +17,14 @@ const routes = [
 	}
 ];
 
-
-
-botGame.init();
-versus.init();
+exports.init = enableVersus => {
+    botGame.init();
+    routes.push(...botGame.routes(HTTP_VERBS));
+    if (enableVersus) {
+        versus.init();
+        routes.push(...versus.routes(HTTP_VERBS));
+    }
+};
 
 
 

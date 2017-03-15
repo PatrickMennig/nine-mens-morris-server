@@ -1,6 +1,7 @@
 // ==== IMPORTS ====
 const express 						= require('express');
 const bodyParser 					= require('body-parser');
+const router = require('./routes/routes');
 const routes 						= require('./routes/routes').getRoutes();
 const createRoute 					= require('./routes/routes').createRoute;
 const config  						= require('./config');
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 /* connect to the database */
 // mongo.init();
 
+router.init(config.server.enableVersus);
 
 
 /* setup route handlers for all routes imported in ./routes/routes */

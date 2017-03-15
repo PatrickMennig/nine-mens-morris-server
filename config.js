@@ -1,7 +1,8 @@
 module.exports = {
 
 	server: {
-		PORT: 3000
+        PORT: 3000,
+        enableVersus: false
 	},
 
 	database: {
