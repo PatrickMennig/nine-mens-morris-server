@@ -60,7 +60,7 @@ exports.stopCleanTask = () => {
 function cleanStore() {
 	const now = new Date().getTime();
 	Object.keys(store).map(k => {
-		if(now - store[k].lastTurnPlayedAt > 10 * 1000) {
+		if(now - store[k].lastTurnPlayedAt > 60 * 1000) {
 
 			const game = store[k];
 

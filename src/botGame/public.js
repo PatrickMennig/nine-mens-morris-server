@@ -133,25 +133,25 @@ const playTurn = (req, res, next) => {
 		.then(t => {turn = t;})
 		.then(() => {
 			// now we have a valid groupId, gameId, game and turn
-			//Todo: remove logging
 
-			console.log('##### player is making a turn:');
-			console.log(turn);
-			console.log(game.boardStateVisual());
+			//Todo: remove logging
+			// console.log('##### player is making a turn:');
+			// console.log(turn);
+			// console.log(game.boardStateVisual());
 
 			const turnResult = game.executeTurn(groupId, turn);
 
-			console.log('##### player has made a turn');
-			console.log(game.boardStateVisual());
+			// console.log('##### player has made a turn');
+			// console.log(game.boardStateVisual());
 
 			if(turnResult.error) {
-				console.log('############# PLAYER ERROR #############');
+				// console.log('############# PLAYER ERROR #############');
 				return Promise.reject(new Error(`The turn supplied was not valid. You automatically lost the game: ${turnResult.error} If you feel this is an error with the server, please contact an administrator.`));
 			}
 
 			if(turnResult.winner) {
 
-				console.log('############# PLAYER WON #############');
+				// console.log('############# PLAYER WON #############');
 
 				return BotGame.saveNew({
 					id: game.id,
@@ -164,16 +164,16 @@ const playTurn = (req, res, next) => {
 				.then(null, err => endChain(err));
 			}
 
-			console.log('##### bot is making a turn:');
+			// console.log('##### bot is making a turn:');
 			const botTurnResult = game.executeBotTurn(ai);
-			console.log(botTurnResult.turn);
-			console.log('##### bot has made a turn');
-			console.log(game.boardStateVisual());
+			// console.log(botTurnResult.turn);
+			// console.log('##### bot has made a turn');
+			// console.log(game.boardStateVisual());
 
 
 			if(botTurnResult.winner) {
 
-				console.log('############# BOT WON #############');
+				// console.log('############# BOT WON #############');
 
 				return BotGame.saveNew({
 					id: game.id,
@@ -199,7 +199,7 @@ const playTurn = (req, res, next) => {
 		})
 		.then(result => {
 
-			console.dir(result);
+			// console.dir(result);
 
 			res.status(result.status);
 			if(result.state === 200) {
