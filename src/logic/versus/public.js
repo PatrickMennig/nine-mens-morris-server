@@ -1,11 +1,11 @@
 // ==== IMPORTS ====
 const EventEmitter = require('events').EventEmitter;
-const messageBus = new EventEmitter();
-
-const Game = require('../game/Game');
-const gameFactory = require('../game/gameFactory');
-const validation = require('../game/validation');
-const store = require('./store');
+const messageBus  = new EventEmitter();
+const Game        = require('../../game/Game');
+const gameFactory = require('../../game/gameFactory');
+const validation  = require('../../game/validation');
+const store       = require('./store');
+const VersusGame  = require('../../db/model/VersusGame');
 
 
 // ==== LOCAL CONSTANTS ====
@@ -33,7 +33,7 @@ exports.init = () => {
 messageBus.on('save-game', result => {
     // Todo: save game to database
     const {winnerId, game} = result;
-    // ...@
+    VersusGame.saveNew();
 });
 
 
@@ -103,7 +103,7 @@ const offerGame = (req, res, next) => {
             groupId = id
         })
         .then(null, err => endChain(err))
-        .then(() => gameFactory.create({}, {}, store))
+        .then(() => gameFactory.create({}, {}, game => store.isSet(game.id)))
         .then(null, err => endChain(err))
         .then(game => {
             store.save(game);
@@ -208,24 +208,16 @@ const playTurn = (req, res, next) => {
 
     validation
         .isAcceptable(validation.GROUP_ID, req.query['groupid'])
-        .then(id => {
-            groupId = id;
-        })
+        .then(id => groupId = id)
         .then(null, err => endChain(err))
         .then(() => validation.isAcceptable(validation.GAME_ID, req.query['gameid'], store))
-        .then(id => {
-            gameId = id;
-        })
+        .then(id => gameId = id)
         .then(null, err => endChain(err))
-        .then(() => {
-            game = store.get(gameId);
-        })
+        .then(() => game = store.get(gameId))
         .then(null, err => endChain(err))
         .then(() => validation.isAcceptable(validation.TURN, req.body))
         .then(null, err => endChain(err))
-        .then(t => {
-            turn = t;
-        })
+        .then(t => turn = t)
         .then(() => {
 
             // execute turn ....
@@ -239,6 +231,11 @@ const playTurn = (req, res, next) => {
                 messageBus.emit(`wait-for-turn-${gameId}-${game.getActivePlayer().id}`, {
                     status: 201,
                     result: `${groupId} has won the game, you lost.`
+                });
+
+                messageBus.emit('save-game', {
+                    winnerId: groupId,
+                    game: game
                 });
 
                 return sendResult(

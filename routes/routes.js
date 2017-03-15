@@ -1,7 +1,7 @@
 // ==== IMPORTS ====
 const HTTP_VERBS 					= require('./const');
-const botGame						= require('../src/botGame/public');
-const versus						= require('../src/versus/public');
+const botGame = require('../src/logic/botGame/public');
+const versus  = require('../src/logic/versus/public');
 
 
 

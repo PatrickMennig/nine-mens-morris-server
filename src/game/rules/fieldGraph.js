@@ -49,6 +49,11 @@ const neighbors = (idA, idB) => {
 };
 
 
+const notNeighbors   = (idA, idB) => {
+    return !neighbors(idA, idB);
+};
+
+
 const getNeighbors = (id) => {
 	return jsnx.neighbors(field, id);
 };
@@ -76,6 +81,7 @@ const getVerticalRow = (id) => {
 
 exports.getNeighbors = getNeighbors;
 exports.neighbors = neighbors;
+exports.notNeighbors = notNeighbors;
 exports.getVerticalRow = getVerticalRow;
 exports.getHorizontalRow = getHorizontalRow;
 exports.horizontalNeighbors = horizontalNeighbors;
@@ -128,17 +134,3 @@ function getRow (id, type) {
 
 	return row.filter(onlyUnique).sort((a,b)=> a-b);
 }
-
-
-
-/*
- console.log(exports.verticalNeighbors(0,9) === true);
- console.log(exports.verticalNeighbors(0,1) === false);
- console.log(exports.verticalNeighbors(0,23) === false);
- console.log(exports.horizontalNeighbors(0,1) === true);
- console.log(exports.horizontalNeighbors(4,7) === false);
- console.log(exports.horizontalNeighbors(0,23) === false);
-*/
-//exports.neighbors(0,14);
-//console.dir(exports.getVerticalRow(10));
-//console.dir(exports.getHorizontalRow(10));

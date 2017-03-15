@@ -1,25 +1,28 @@
 // ==== IMPORTS ====
-const Intersection 					= require('./Intersection');
-
+const Intersection = require('./Intersection');
 
 
 // ==== CONSTRUCTOR ====
-function Board (board = emptyBoard()) {
-	this.field = board;
+function Board(board = emptyBoard()) {
+    this.field = board;
 }
 
 module.exports = Board;
 
 
-
 // ==== PUBLIC FUNCTIONS ====
 Board.prototype.set = function (fieldId, token) {
-	this.field[fieldId].set(token);
+    this.field[fieldId].set(token);
+};
+
+
+Board.prototype.get = function (fieldId) {
+    return this.field[fieldId];
 };
 
 
 Board.prototype.visual = function () {
-	return `
+    return `
 	
 	    ${this.field[0].token} - - - - - - ${this.field[1].token} - - - - - - ${this.field[2].token}
 		|             |             |
@@ -40,7 +43,7 @@ Board.prototype.visual = function () {
 
 
 Board.prototype.fieldIds = function () {
-	return `
+    return `
 		Ids of board intersections
 		0 - - - - - - 1 - - - - - - 2
 		|             |             |
@@ -59,8 +62,7 @@ Board.prototype.fieldIds = function () {
 };
 
 
-
 // ==== HELPER FUNCTIONS ====
 function emptyBoard() {
-	return new Array(24).fill(null).map((v, id) => new Intersection(id));
+    return new Array(24).fill(null).map((v, id) => new Intersection(id));
 }

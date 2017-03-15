@@ -1,7 +1,7 @@
 // ==== IMPORTS ====
-const rules 						= require('../../../game/rules/rules');
-const GAME_CONST					= require('../../../game/const');
-const utility						= require('../utility');
+const rules      = require('../../../../game/rules/rules');
+const GAME_CONST = require('../../../../game/const');
+const utility    = require('../utility');
 
 
 

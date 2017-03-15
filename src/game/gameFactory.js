@@ -1,9 +1,7 @@
 const Game 							= require('./Game');
 
 
-
-
-const create = (playerOne, playerTwo, store) => {
+const create = (playerOne, playerTwo, isDuplicateFn) => {
 
 	return new Promise((resolve, reject) => {
 
@@ -17,7 +15,7 @@ const create = (playerOne, playerTwo, store) => {
 			if(retries == MAX_RETRIES) {
 				break;
 			}
-		} while(isGameInStore(game, store));
+        } while (isDuplicateFn(game));
 
 		if(!game) {
 			reject(new Error('Temporarily unable to create game, please try again later. Maybe all slots are occupied. If the problem persists, please contact an administrator.'))
@@ -34,8 +32,4 @@ exports.create = create;
 
 function createGame(playerOne, playerTwo={}) {
 	return new Game(playerOne.id, playerOne.type, playerTwo.id, playerTwo.type);
-}
-
-function isGameInStore(game, store) {
-	return store.isSet(game.id);
 }

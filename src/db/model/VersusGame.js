@@ -16,7 +16,7 @@ const versusGameSchema = mongoose.Schema({
 const VersusGame = mongoose.model('VersusGame', versusGameSchema);
 
 exports.newVersusGame = (vals) => new VersusGame(vals);
-exports.model = BotGame;
+exports.model = VersusGame;
 
 
 exports.saveNew = (vals) => {
