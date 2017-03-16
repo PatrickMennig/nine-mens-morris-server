@@ -31,7 +31,6 @@ exports.init = () => {
 
 // ==== STORE EVENT LISTENER
 messageBus.on('save-game', result => {
-    // Todo: save game to database
     const {winnerId, game} = result;
     VersusGame.saveNew();
 });
@@ -152,17 +151,30 @@ const joinGame = (req, res, next) => {
             const numberOfPlayers = game.numberOfPlayers();
 
             if (numberOfPlayers === 1) {
+
                 // first player joining
                 // just wait till 2nd player joined
                 messageBus.once(`wait-for-join-${game.id}`, () => {
                     handleConnect();
                 });
-                messageBus.once(`wait-for-disconnect-${game.id}-${groupId}`, (result, game) => sendResult(res, result, game));
+
+                messageBus.once(`wait-for-disconnect-${game.id}-${groupId}`, (result, game) => {
+                    if (!res.headersSent) {
+                        sendResult(res, result, game);
+                    }
+                });
             }
 
             if (numberOfPlayers === 2) {
+
                 // second player joining
-                messageBus.once(`wait-for-disconnect-${game.id}-${groupId}`, (result, game) => sendResult(res, result, game));
+                messageBus.once(`wait-for-disconnect-${game.id}-${groupId}`, (result, game) => {
+                    if (!res.headersSent) {
+                        sendResult(res, result, game)
+                    }
+
+                });
+
                 // start the game and handle the "all players joined" event
                 game.startGame();
                 messageBus.emit(`wait-for-join-${game.id}`);

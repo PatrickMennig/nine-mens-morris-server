@@ -85,9 +85,5 @@ function cleanStore() {
                 game: game
             });
         }
-        if (now - store[k].creationTime > 7 * 24 * 60 * 60 * 1000) {
-            //store[k].setToDeleteState();
-            // Todo: delete?
-        }
     });
 }
