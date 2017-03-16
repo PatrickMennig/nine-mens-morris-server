@@ -241,7 +241,7 @@ const playTurn = (req, res, next) => {
 
             if (turnResult.winner) {
                 messageBus.emit(`wait-for-turn-${gameId}-${game.getOtherPlayer().id}`, {
-                    status: 201,
+                    status: 418,
                     result: `${groupId} has won the game, you lost.`
                 });
 
@@ -358,7 +358,7 @@ const sendResult = (res, result, game) => {
             turnResult: replaceNullNumbers(result.result, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
         });
     } else {
-        res.status(201);
+        res.status(result.status);
         return res.send(result.result);
     }
 };
