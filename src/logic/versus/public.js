@@ -240,7 +240,7 @@ const playTurn = (req, res, next) => {
             }
 
             if (turnResult.winner) {
-                messageBus.emit(`wait-for-turn-${gameId}-${game.getActivePlayer().id}`, {
+                messageBus.emit(`wait-for-turn-${gameId}-${game.getOtherPlayer().id}`, {
                     status: 201,
                     result: `${groupId} has won the game, you lost.`
                 });
