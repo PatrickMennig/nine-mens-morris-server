@@ -16,7 +16,8 @@
     "express-ws": "^2.0.0",
     "jsnetworkx": "^0.3.4",
     "mongoose": "^4.8.1",
-    "promise.any": "^0.1.1"
+    "promise.any": "^0.1.1",
+    "superagent": "^3.5.0"
   },
   "devDependencies": {
     "mocha": "^3.2.0",

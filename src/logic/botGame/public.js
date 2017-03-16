@@ -6,6 +6,7 @@ const BotGame     = require('../../db/model/BotGame');
 const Game        = require('../../game/Game');
 const Store       = require('../store/Store');
 const store       = new Store();
+const superagent = require('superagent');
 
 
 // ==== LOCAL CONSTANTS ====
@@ -94,6 +95,11 @@ const joinGame = (req, res, next) => {
             store.put(game.id, game);
             game.startGame();
 
+            superagent
+                .post('https://hooks.slack.com/services/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')
+                .send({text: `Team ${groupId} begins a new botgame!`})
+                .end();
+
             let turnResult = null;
             if (game.isBotActive()) {
                 turnResult = game.executeBotTurn(ai);
@@ -147,6 +153,12 @@ const playTurn = (req, res, next) => {
 
             if (turnResult.winner) {
 
+                superagent
+                    .post('https://hooks.slack.com/services/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')
+                    .send({text: `Team ${groupId} has won a botgame!`})
+                    .end();
+
+
                 return BotGame.saveNew({
                     id: game.id,
                     groupId: groupId,
@@ -161,6 +173,11 @@ const playTurn = (req, res, next) => {
             const botTurnResult = game.executeBotTurn(ai);
 
             if (botTurnResult.winner) {
+
+                superagent
+                    .post('https://hooks.slack.com/services/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')
+                    .send({text: `Team ${groupId} has lost a botgame!`})
+                    .end();
 
                 return (
                     BotGame.saveNew({
