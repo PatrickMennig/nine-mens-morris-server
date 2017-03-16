@@ -161,8 +161,12 @@ Game.prototype.executeTurn = function (playerId, turn) {
 
 	const willClose = rules.willCloseMill(this.board, activePlayerObj, fromId, toId);
 	if(willClose && removeId == null) {
-		return  this.endWithError( new Error(`You are closing a mill this turn but didn't supply a field id where you want to remove a token.`) );
+        return this.endWithError(new Error(`You are closing a mill this turn but didn't supply a field id where you want to remove a token.`));
 	}
+
+    if (!willClose && removeId >= 0) {
+        return this.endWithError(new Error(`You are not closing a mill this turn but sending a field id where you want to remove a token.`));
+    }
 
 	if(!rules.isValidRemoval(this.board, otherPlayerObj, fromId, toId, removeId)) {
 		return  this.endWithError( new Error(`You closed a mill but the token you want to remove: ${removeId} is not allowed to be removed by the rules.`) );

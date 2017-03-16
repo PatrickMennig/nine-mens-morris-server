@@ -229,6 +229,23 @@ describe('rules', function () {
 			assert.equal(true, rules.willCloseMill(b, p, 10, 9));
 		});
 
+        it('should return false, player is not closing a mill', function () {
+
+            const p     = new Player(0, GAME_CONST.PLAYER_BOT, GAME_CONST.TOKEN_PLAYER_ONE);
+            const field = new Array(24).fill(null).map((v, i) => new Intersection(i));
+
+            field[14].token = p.token;
+            field[6].token  = GAME_CONST.TOKEN_EMPTY;
+            field[7].token  = GAME_CONST.TOKEN_PLAYER_TWO;
+            field[8].token  = p.token;
+            field[1].token  = GAME_CONST.TOKEN_PLAYER_TWO;
+
+            const b = new Board(field);
+
+            assert.equal(false, rules.willCloseMill(b, p, null, 6));
+
+        });
+
 		it('should return true, player closes horizontal mill', function () {
 
 			const p = new Player(0, GAME_CONST.PLAYER_BOT, GAME_CONST.TOKEN_PLAYER_ONE);
