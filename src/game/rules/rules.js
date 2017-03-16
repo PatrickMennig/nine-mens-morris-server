@@ -142,7 +142,7 @@ exports.isValidRemoval = function (board, otherPlayer, fromId, toId, removeId) {
 
 
 exports.willEndGame = function (otherPlayer, removed = false) {
-    return removed && otherPlayer.noTokensOnBoard === 3 && otherPlayer.noTokensInHand === 0;
+    return removed >= 0 && otherPlayer.noTokensOnBoard === 3 && otherPlayer.noTokensInHand === 0;
 };
 
 
