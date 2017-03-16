@@ -153,7 +153,15 @@ Game.prototype.executeTurn = function (playerId, turn) {
 
 	const activePlayerObj = this.players.find(p => p.id === playerId);
 	const otherPlayerObj = this.players[otherPlayer(this.activePlayer)];
-	const { fromId=null, toId=null, removeId=null } = turn;
+    let {fromId = null, toId = null, removeId = null} = turn;
+
+    if (fromId != null && fromId < 0) {
+        fromId = null;
+    }
+
+    if (removeId != null && removeId < 0) {
+        removeId = null;
+    }
 
 	if(!rules.isValidTurn(this.board, activePlayerObj, fromId, toId)) {
 		return  this.endWithError( new Error(`Invalid turn. This move is not allowed by the rules.`) );
@@ -164,7 +172,7 @@ Game.prototype.executeTurn = function (playerId, turn) {
         return this.endWithError(new Error(`You are closing a mill this turn but didn't supply a field id where you want to remove a token.`));
 	}
 
-    if (!willClose && removeId >= 0) {
+    if (!willClose && removeId != null) {
         return this.endWithError(new Error(`You are not closing a mill this turn but sending a field id where you want to remove a token.`));
     }
 
@@ -178,7 +186,7 @@ Game.prototype.executeTurn = function (playerId, turn) {
 
 	// step 2: check the consequences (i. e. will game end?)
 	// if yes, we do not execute the last turn
-	if(rules.willEndGame(otherPlayerObj, removeId >= 0)) {
+    if (rules.willEndGame(otherPlayerObj, removeId != null)) {
 		this.state = GAME_CONST.GAME_FINISHED;
 		return {
 			state: this.state,

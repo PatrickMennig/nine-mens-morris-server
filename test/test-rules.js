@@ -518,7 +518,18 @@ describe('rules', function () {
 			assert.equal(true, rules.willEndGame(p, true));
 		});
 
-		it('should return false if player will not lose game, has three tokens on board but still some in hand', function () {
+        it('should return false, player will not lose game, has only three tokens on board but no removal', function () {
+
+            const p = new Player(0, GAME_CONST.PLAYER_BOT, GAME_CONST.TOKEN_PLAYER_ONE);
+
+            p.noTokensOnBoard = 3;
+            p.noTokensInHand  = 0;
+
+            assert.equal(false, rules.willEndGame(p, false));
+        });
+
+
+        it('should return false if player will not lose game, has three tokens on board but still some in hand', function () {
 
 			const p = new Player(0, GAME_CONST.PLAYER_BOT, GAME_CONST.TOKEN_PLAYER_ONE);
 
