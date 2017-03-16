@@ -63,7 +63,7 @@ function cleanStore() {
 
             const game = store[k];
 
-            if (game.status === require('../game/const').GAME_TIMED_OUT) {
+            if (game.status === require('../../game/const').GAME_TIMED_OUT) {
                 return;
             }
 
