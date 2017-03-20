@@ -1,11 +1,14 @@
 // ==== IMPORTS ====
 const EventEmitter = require('events').EventEmitter;
-const messageBus  = new EventEmitter();
-const Game        = require('../../game/Game');
-const gameFactory = require('../../game/gameFactory');
-const validation  = require('../../game/validation');
-const store       = require('./store');
-const VersusGame  = require('../../db/model/VersusGame');
+const messageBus = new EventEmitter();
+
+const Game         = require('../../game/Game');
+const gameFactory  = require('../../game/gameFactory');
+const GameResponse = require('../communication/GameResponse');
+
+const validation = require('../../game/validation');
+const store      = require('./store');
+const VersusGame = require('../../db/model/VersusGame');
 
 
 // ==== LOCAL CONSTANTS ====
@@ -160,7 +163,7 @@ const joinGame = (req, res, next) => {
 
                 messageBus.once(`wait-for-disconnect-${game.id}-${groupId}`, (result, game) => {
                     if (!res.headersSent) {
-                        sendResult(res, result, game);
+                        sendResult(res, 400, result, game);
                     }
                 });
             }
@@ -188,14 +191,7 @@ const joinGame = (req, res, next) => {
 
                 // active player has to make a turn
                 if (groupId === activePlayerId) {
-                    sendResult(
-                        res,
-                        {
-                            status: 200,
-                            result: game.emptyTurnResult()
-                        },
-                        game
-                    );
+                    sendResult(res, {status: GameResponse.STATUS.NEXT_TURN, result: game.emptyTurnResult()}, game);
                 }
                 // wait till active player has made it's turn and then handle it normally
                 else {
@@ -240,9 +236,10 @@ const playTurn = (req, res, next) => {
             }
 
             if (turnResult.winner) {
+
                 messageBus.emit(`wait-for-turn-${gameId}-${game.getOtherPlayer().id}`, {
-                    status: 418,
-                    result: `${groupId} has won the game, you lost.`
+                    status: GameResponse.STATUS.LOSS,
+                    result: turnResult
                 });
 
                 messageBus.emit('save-game', {
@@ -250,19 +247,13 @@ const playTurn = (req, res, next) => {
                     game: game
                 });
 
-                return sendResult(
-                    res,
-                    {
-                        status: 201,
-                        result: `You have won the game, ${game.getOtherPlayer().id} lost.`
-                    },
-                    game);
+                return sendResult(res, {status: GameResponse.STATUS.VICTORY, result: null}, game);
             }
 
             // next player should now be set...
             // notify other player
             messageBus.emit(`wait-for-turn-${gameId}-${game.getActivePlayer().id}`, {
-                status: 200,
+                status: GameResponse.STATUS.NEXT_TURN,
                 result: turnResult
             });
 
@@ -277,8 +268,8 @@ const playTurn = (req, res, next) => {
 
             // dont forget to notify the other player upon error
             messageBus.emit(`wait-for-turn-${gameId}-${game.getOtherPlayer().id}`, {
-                status: 201,
-                result: `Other player made a mistake: ${err.message} ${game.getOtherPlayer().id} automatically won the game.`
+                status: GameResponse.STATUS.VICTORY_INVALID_TURN,
+                result: null
             });
 
             return declineRequest(400, err.message, res);
@@ -331,9 +322,11 @@ const declineRequest = (code, msg, res) => {
     res.send(msg);
 };
 
+
 const endChain = (err) => {
     throw new Error(err.message);
 };
+
 
 const replaceNullNumbers = (obj, prop, keys, replacement) => {
     if (obj === null) {
@@ -349,16 +342,14 @@ const replaceNullNumbers = (obj, prop, keys, replacement) => {
     return obj;
 };
 
+
 const sendResult = (res, result, game) => {
-    if (result.status === 200) {
-        return res.json({
-            id: game.id,
-            activePlayer: game.activePlayer,
-            creationTime: game.creationTime,
-            turnResult: replaceNullNumbers(result.result, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
-        });
-    } else {
-        res.status(result.status);
-        return res.send(result.result);
-    }
+
+    const response = GameResponse.res(
+        result.status,
+        game,
+        replaceNullNumbers(result.result, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
+    );
+
+    return res.json(response);
 };

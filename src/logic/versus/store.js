@@ -69,11 +69,13 @@ function cleanStore() {
 
             game.setTimeoutState();
 
+            //TODO REMOVE DIRECT REFERECE TO GAMERESPONSE CODE HERE (202)
+
             const playerIds = game.players.map(p => p.id);
             playerIds.forEach(pid => {
                 messageBus.emit(`wait-for-disconnect-${game.id}-${pid}`, {
-                    status: 201,
-                    result: `Game has ended, active player timed out.`
+                    status: 202,
+                    result: null
                 });
             });
 
