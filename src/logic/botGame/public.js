@@ -1,12 +1,13 @@
 // ==== IMPORTS ====
-const gameFactory = require('../../game/gameFactory');
-const validation  = require('../../game/validation');
-const ai          = require('./ai/ai');
-const BotGame     = require('../../db/model/BotGame');
-const Game        = require('../../game/Game');
-const Store       = require('../store/Store');
-const store       = new Store();
-const superagent = require('superagent');
+const gameFactory  = require('../../game/gameFactory');
+const validation   = require('../../game/validation');
+const ai           = require('./ai/ai');
+const BotGame      = require('../../db/model/BotGame');
+const Game         = require('../../game/Game');
+const GameResponse = require('../communication/GameResponse');
+const Store        = require('../store/Store');
+const store        = new Store();
+const superagent   = require('superagent');
 
 
 // ==== LOCAL CONSTANTS ====
@@ -105,12 +106,16 @@ const joinGame = (req, res, next) => {
                 turnResult = game.executeBotTurn(ai);
             }
 
+            res.json(GameResponse.res(GameResponse.STATUS.NEXT_TURN, game, turnResult));
+
+            /*
             res.json({
                 id: game.id,
                 activePlayer: game.activePlayer,
                 creationTime: game.creationTime,
                 turnResult: replaceNullNumbers(turnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
             });
+             */
 
         })
         .then(null, err => endChain(err))
@@ -164,8 +169,8 @@ const playTurn = (req, res, next) => {
                     groupId: groupId,
                     winner: groupId
                 }).then(() => Promise.resolve({
-                    status: 201,
-                    result: 'You won!'
+                    status: GameResponse.STATUS.VICTORY,
+                    result: null
                 }))
                     .then(null, err => endChain(err));
             }
@@ -186,33 +191,20 @@ const playTurn = (req, res, next) => {
                         winner: '0'
                     })
                         .then(() => Promise.resolve({
-                            status: 201,
-                            result: 'You lost, the bot has won!'
+                            status: GameResponse.STATUS.LOSS,
+                            result: null
                         }))
                         .then(null, err => endChain(err))
                 );
             }
 
             return Promise.resolve({
-                status: 200,
-                result: {
-                    id: game.id,
-                    activePlayer: game.activePlayer,
-                    creationTime: game.creationTime,
-                    turnResult: replaceNullNumbers(botTurnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
-                }
+                status: GameResponse.STATUS.NEXT_TURN,
+                result: replaceNullNumbers(botTurnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
             });
 
         })
-        .then(result => {
-
-            res.status(result.status);
-            if (result.state === 200) {
-                res.json(result.result);
-            } else {
-                res.send(result.result);
-            }
-        })
+        .then(result => res.json(GameResponse.res(result.status, game, result.result)))
         .then(null, err => endChain(err))
         .catch(err => declineRequest(400, err.message, res));
 };
@@ -225,7 +217,7 @@ const activeGame = (req, res, next) => {
         .then(id => {
             const game = store.get(id);
             if (!game) {
-                throw new Error(`Game with id: ${gameId} does not exist on server.`);
+                throw new Error(`Game with id: ${id} does not exist on server.`);
             }
             res.json(game);
         })
