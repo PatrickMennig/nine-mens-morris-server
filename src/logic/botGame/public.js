@@ -112,12 +112,12 @@ const joinGame = (req, res, next) => {
             res.json(GameResponse.res(GameResponse.STATUS.NEXT_TURN, game, replaceNullNumbers(turnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)));
 
             /*
-            res.json({
-                id: game.id,
-                activePlayer: game.activePlayer,
-                creationTime: game.creationTime,
-                turnResult: replaceNullNumbers(turnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
-            });
+             res.json({
+             id: game.id,
+             activePlayer: game.activePlayer,
+             creationTime: game.creationTime,
+             turnResult: replaceNullNumbers(turnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
+             });
              */
 
         })
@@ -165,12 +165,13 @@ const playTurn = (req, res, next) => {
 
                 setTimeout(() => {
 
-                    BotGame.saveNew({
-                        id: game.id,
-                        groupId: groupId,
-                        winner: groupId,
-                        turnsTaken: game.turnsTaken
-                    });
+                    BotGame
+                        .saveNew({
+                            id: game.id,
+                            groupId: groupId,
+                            winner: groupId,
+                            turnsTaken: game.turnsTaken
+                        });
 
                     superagent
                         .post('https://hooks.slack.com/services/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')
@@ -188,7 +189,7 @@ const playTurn = (req, res, next) => {
 
             const botTurnResult = game.executeBotTurn(ai);
 
-            if (botTurnResult.winner && botTurnResult.winner === 0) {
+            if (botTurnResult.winner === 0) {
 
 
 
@@ -196,12 +197,13 @@ const playTurn = (req, res, next) => {
 
                 setTimeout(() => {
 
-                    BotGame.saveNew({
-                        id: game.id,
-                        groupId: groupId,
-                        winner: '0',
-                        turnsTaken: game.turnsTaken
-                    });
+                    BotGame
+                        .saveNew({
+                            id: game.id,
+                            groupId: groupId,
+                            winner: '0',
+                            turnsTaken: game.turnsTaken
+                        });
 
                     superagent
                         .post('https://hooks.slack.com/services/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')
