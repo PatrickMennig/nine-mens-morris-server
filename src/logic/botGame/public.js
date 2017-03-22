@@ -167,6 +167,8 @@ const playTurn = (req, res, next) => {
                     .end();
 
 
+                console.log('Player has won.');
+
                 return BotGame.saveNew({
                     id: game.id,
                     groupId: groupId,
@@ -186,6 +188,8 @@ const playTurn = (req, res, next) => {
                     .post('https://hooks.slack.com/services/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')
                     .send({text: `Team ${groupId} has lost a botgame!`})
                     .end();
+
+                console.log('Bot has won.');
 
                 return (
                     BotGame.saveNew({
@@ -208,7 +212,7 @@ const playTurn = (req, res, next) => {
 
         })
         .then(result => {
-            console.log('Play Turn:');
+            console.log('Send Play Turn Result:');
             console.dir(GameResponse.res(result.status, game, result.result));
             res.json(GameResponse.res(result.status, game, result.result));
         })
