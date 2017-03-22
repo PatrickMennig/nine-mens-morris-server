@@ -161,54 +161,63 @@ const playTurn = (req, res, next) => {
 
             if (turnResult.winner) {
 
-                superagent
-                    .post('https://hooks.slack.com/services/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')
-                    .send({text: `Team ${groupId} has won a botgame!`})
-                    .end();
-
-
                 console.log('Player has won.');
 
-                return BotGame.saveNew({
-                    id: game.id,
-                    groupId: groupId,
-                    winner: groupId
-                }).then(() => Promise.resolve({
+                setTimeout(() => {
+
+                    BotGame.saveNew({
+                        id: game.id,
+                        groupId: groupId,
+                        winner: groupId
+                    });
+
+                    superagent
+                        .post('https://hooks.slack.com/services/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')
+                        .send({text: `Team ${groupId} has won a botgame!`})
+                        .end();
+
+                }, 250);
+
+                return {
                     status: GameResponse.STATUS.VICTORY,
                     result: null
-                }))
-                    .then(null, err => endChain(err));
+                };
+
             }
 
             const botTurnResult = game.executeBotTurn(ai);
 
-            if (botTurnResult.winner) {
+            if (botTurnResult.winner !== 0) {
 
-                superagent
-                    .post('https://hooks.slack.com/services/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')
-                    .send({text: `Team ${groupId} has lost a botgame!`})
-                    .end();
+
 
                 console.log('Bot has won.');
 
-                return (
+                setTimeout(() => {
+
                     BotGame.saveNew({
                         id: game.id,
                         groupId: groupId,
                         winner: '0'
-                    })
-                        .then(() => Promise.resolve({
-                            status: GameResponse.STATUS.LOSS,
-                            result: null
-                        }))
-                        .then(null, err => endChain(err))
-                );
+                    });
+
+                    superagent
+                        .post('https://hooks.slack.com/services/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')
+                        .send({text: `Team ${groupId} has lost a botgame!`})
+                        .end();
+
+                }, 250);
+
+                return {
+                    status: GameResponse.STATUS.LOSS,
+                    result: replaceNullNumbers(botTurnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
+                };
             }
 
-            return Promise.resolve({
+            return {
                 status: GameResponse.STATUS.NEXT_TURN,
                 result: replaceNullNumbers(botTurnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)
-            });
+            };
 
         })
         .then(result => {
