@@ -208,9 +208,9 @@ const playTurn = (req, res, next) => {
 
         })
         .then(result => {
-            console.log('Join Game:');
+            console.log('Play Turn:');
             console.dir(GameResponse.res(result.status, game, result.result));
-            res.json(GameResponse.res(result.status, game, result.result))
+            res.json(GameResponse.res(result.status, game, result.result));
         })
         .then(null, err => endChain(err))
         .catch(err => declineRequest(400, err.message, res));
