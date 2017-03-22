@@ -106,8 +106,8 @@ const joinGame = (req, res, next) => {
                 turnResult = game.executeBotTurn(ai);
             }
 
-            console.log('Join Game:');
-            console.dir(GameResponse.res(GameResponse.STATUS.NEXT_TURN, game, replaceNullNumbers(turnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)));
+            //console.log('Join Game:');
+            //console.dir(GameResponse.res(GameResponse.STATUS.NEXT_TURN, game, replaceNullNumbers(turnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)));
 
             res.json(GameResponse.res(GameResponse.STATUS.NEXT_TURN, game, replaceNullNumbers(turnResult, 'turn', ['fromId', 'toId', 'removeId'], Game.NO_ID)));
 
