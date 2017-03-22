@@ -8,7 +8,8 @@ const botGameSchema = mongoose.Schema({
 	timeFinished: {type: Date, default: Date.now},
 	status: {type: String, default: 'FINISHED'},
 	groupId: String,
-	winner: String
+    winner: String,
+    turnsTaken: []
 });
 
 

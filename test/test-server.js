@@ -88,12 +88,54 @@ setTimeout(function () {
 				.then(null, err => {
 					done(new Error('Sending turn after joining failed.'));
 				})
-		})
+        });
+
+
+        it('should be a valid first turn in a botgame, not  a winning turn', function (done) {
+            agent
+                .post('/botgame/join')
+                .query(`groupid=${GROUP_ID}`)
+                .then(res => {
+
+                    const resBody                        = res.body;
+                    const {id, activePlayer, turnResult} = resBody;
+
+                    const turn = {};
+
+                    if (turnResult === null) {
+                        turn.toId = 23;
+                    }
+
+                    if (turnResult !== null) {
+                        throw new Error('Bot has made the first turn.');
+                    }
+
+                    return agent
+                        .post('/botgame/join')
+                        .query(`groupid=${GROUP_ID}`)
+                        .query(`gameid=${id}`)
+                        .send(turn)
+                })
+                .then(null, err => {
+                    throw err;
+                })
+                .then(turnRes => {
+                    if (turnRes.body.statusCode !== 100) {
+                        throw new Error('Game has ended after first turn.');
+                    }
+                    done();
+                })
+                .then(null, err => {
+                    done(err);
+                })
+        })
+
+
+
 	});
 
 
-
-	describe('versus server', function () {
+    describe('versus server', function () {
 
         it('should allow us to offer and join a game with two clients');
 

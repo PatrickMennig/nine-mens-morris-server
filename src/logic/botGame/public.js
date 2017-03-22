@@ -161,14 +161,15 @@ const playTurn = (req, res, next) => {
 
             if (turnResult.winner) {
 
-                console.log('Player has won.');
+                //console.log('Player has won.');
 
                 setTimeout(() => {
 
                     BotGame.saveNew({
                         id: game.id,
                         groupId: groupId,
-                        winner: groupId
+                        winner: groupId,
+                        turnsTaken: game.turnsTaken
                     });
 
                     superagent
@@ -187,18 +188,19 @@ const playTurn = (req, res, next) => {
 
             const botTurnResult = game.executeBotTurn(ai);
 
-            if (botTurnResult.winner !== 0) {
+            if (botTurnResult.winner && botTurnResult.winner === 0) {
 
 
 
-                console.log('Bot has won.');
+                //console.log('Bot has won.');
 
                 setTimeout(() => {
 
                     BotGame.saveNew({
                         id: game.id,
                         groupId: groupId,
-                        winner: '0'
+                        winner: '0',
+                        turnsTaken: game.turnsTaken
                     });
 
                     superagent
@@ -221,8 +223,8 @@ const playTurn = (req, res, next) => {
 
         })
         .then(result => {
-            console.log('Send Play Turn Result:');
-            console.dir(GameResponse.res(result.status, game, result.result));
+            //console.log('Send Play Turn Result:');
+            //console.dir(GameResponse.res(result.status, game, result.result));
             res.json(GameResponse.res(result.status, game, result.result));
         })
         .then(null, err => endChain(err))

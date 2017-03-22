@@ -38,6 +38,8 @@ function Game (pOneId=null, pOneType=null, pTwoId=null, pTwoType=null) {
 	if(pTwoId !== null && pTwoType !== null) {
 		this.addPlayer(pTwoId, pTwoType);
 	}
+
+    this.turnsTaken = [];
 }
 
 module.exports = Game;
@@ -183,6 +185,7 @@ Game.prototype.executeTurn = function (playerId, turn) {
 
 
 	this.lastTurnPlayedAt = new Date().getTime();
+    this.turnsTaken.push({playedAt: this.lastTurnPlayedAt, turn: turn});
 
 
 	// step 2: check the consequences (i. e. will game end?)
