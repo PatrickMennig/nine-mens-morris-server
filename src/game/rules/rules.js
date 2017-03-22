@@ -62,12 +62,12 @@ exports.isValidTurn = function (board, player, fromId, toId) {
             }
 
             // players are not allowed to take tokens from empty fields
-            if (board.field[fromId].isEmpty()) {
+            if (board.get([fromId]).isEmpty()) {
                 return false;
             }
 
             // players may only move their own tokens
-            if (board.field[fromId].token !== player.token) {
+            if (board.get([fromId]).token !== player.token) {
                 return false;
             }
 
@@ -125,12 +125,12 @@ exports.isValidRemoval = function (board, otherPlayer, fromId, toId, removeId) {
     // then every removal is valid as long as it does not remove empty or own token
     if (otherPlayer.noTokensInHand === 0
         && otherPlayer.noTokensOnBoard === 3
-        && board.field[removeId].token === otherPlayer.token) {
+        && board.get([removeId]).token === otherPlayer.token) {
         return true;
     }
 
     // player wants to remove from empty field?
-    if (board.field[removeId].token !== otherPlayer.token) {
+    if (board.get([removeId]).token !== otherPlayer.token) {
         return false;
     }
 
@@ -162,5 +162,5 @@ exports.phaseForPlayer = function (player) {
 
 // ==== HELPER FUNCTIONS ====
 function containsPlayerToken(board, fieldId, playerToken) {
-    return board.field[fieldId].token === playerToken;
+    return board.get([fieldId]).token === playerToken;
 }

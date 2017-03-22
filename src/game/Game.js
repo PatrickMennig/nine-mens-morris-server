@@ -9,6 +9,7 @@ const GAME_CONST 					= require('./const');
 const base32						= require('base32');
 
 
+//TODO this class is too fucking long...
 
 // ==== LOCAL CONSTANTS ====
 const ID_MIN_INT = 10000;									// also determines the min-length of the ids
@@ -219,7 +220,7 @@ Game.prototype.executeTurn = function (playerId, turn) {
 
 	return {
 		state: this.state,
-		field: this.board.field,
+        field: this.board.getFullBoard(),
 		turn: turn
 	};
 };

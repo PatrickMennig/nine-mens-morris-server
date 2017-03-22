@@ -106,6 +106,9 @@ const joinGame = (req, res, next) => {
                 turnResult = game.executeBotTurn(ai);
             }
 
+            console.log('Join Game:');
+            console.dir(GameResponse.res(GameResponse.STATUS.NEXT_TURN, game, turnResult));
+
             res.json(GameResponse.res(GameResponse.STATUS.NEXT_TURN, game, turnResult));
 
             /*
@@ -204,7 +207,11 @@ const playTurn = (req, res, next) => {
             });
 
         })
-        .then(result => res.json(GameResponse.res(result.status, game, result.result)))
+        .then(result => {
+            console.log('Join Game:');
+            console.dir(GameResponse.res(result.status, game, result.result));
+            res.json(GameResponse.res(result.status, game, result.result))
+        })
         .then(null, err => endChain(err))
         .catch(err => declineRequest(400, err.message, res));
 };
