@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 
 /* connect to the database */
-// mongo.init();
+mongo.init();
 
 router.init(config.server.enableVersus);
 
